@@ -28,6 +28,7 @@ exports.signup = async (req, res) => {
 exports.signin = (req, res) => {
   //find the user based on email
   const { email, password } = req.body;
+
   User.findOne({ email }, (err, user) => {
     if (err || !user)
       return res
@@ -42,6 +43,8 @@ exports.signin = (req, res) => {
       expiresIn: process.env.JWT_TOKEN_EXPIRY
     });
 
+    // const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET);
+
     res.cookie("t", token, {
       expire: new Date() + process.env.JWT_TOKEN_EXPIRY
     });
@@ -51,7 +54,6 @@ exports.signin = (req, res) => {
       token,
       user: { _id, name, email }
     });
-    //token expire in 2 hours
   });
 };
 

@@ -36,8 +36,20 @@ exports.getUser = (req, res) => {
   return res.json({ user: { name, email, created, updated } });
 };
 
-exports.updateUser = (req, res) => {
+exports.updateUser = async (req, res) => {
   let user = req.profile;
+  // console.log({ user });
+  const userExists = await User.findOne({
+    email: req.body.email,
+    _id: { $ne: user._id }
+  });
+
+  if (userExists)
+    return res.status(403).json({
+      errors: {
+        email: "Email is taken !!!"
+      }
+    });
 
   let userToUpdate = {
     name: req.body.name,
